@@ -11,6 +11,7 @@ var gulp = require('gulp'),
     jshint = require('gulp-jshint'),
     uglify = require('gulp-uglify'),
     imagemin = require('gulp-imagemin'),
+    haml = require('gulp-ruby-haml'),
     rename = require('gulp-rename'),
     concat = require('gulp-concat'),
     notify = require('gulp-notify'),
@@ -20,12 +21,12 @@ var gulp = require('gulp'),
 
 // Styles
 gulp.task('styles', function() {
-  return sass('src/styles/main.sass', { style: 'expanded' })
+  return sass('src/styles/**/*.sass', { style: 'expanded' })
     .pipe(autoprefixer('last 2 version'))
-    .pipe(gulp.dest('dist/styles'))
+    .pipe(gulp.dest('dist/css'))
     .pipe(rename({ suffix: '.min' }))
     .pipe(cssnano())
-    .pipe(gulp.dest('dist/styles'));
+    .pipe(gulp.dest('dist/css'));
 });
 // m00g: remove .pipe(notify({ message: 'Styles task complete' }
 
@@ -51,15 +52,22 @@ gulp.task('images', function() {
     .pipe(notify({ message: 'Images task complete' }));
 });
 
+// Get and render all .haml files recursively
+gulp.task('haml', function () {
+  gulp.src('src/haml/**/*.haml')
+    .pipe(haml())
+    .pipe(gulp.dest('dist/'));
+});
 
 // Clean
 gulp.task('clean', function() {
-  return del(['dist/styles', 'dist/scripts', 'dist/images']);
+  return del(['dist/css', 'dist/scripts', 'dist/images', 'dist']);
 });
 
 // Default task
 gulp.task('default', ['clean'], function() {
   gulp.start('styles', 'scripts', 'images');
+  gulp.run('haml');
 });
 
 // Watch
@@ -73,6 +81,9 @@ gulp.task('watch', function() {
 
   // Watch image files
   gulp.watch('src/images/**/*', ['images']);
+
+  // Watch haml files
+  gulp.watch('src/haml/**/*.haml', ['haml']);
 
   // Create LiveReload server
   livereload.listen();

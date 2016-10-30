@@ -20,6 +20,7 @@
     "gulp-livereload": "^3.8.1",
     "gulp-notify": "^2.2.0",
     "gulp-rename": "^1.2.2",
+    "gulp-ruby-haml": "0.0.9",
     "gulp-ruby-sass": "^2.1.0",
     "gulp-uglify": "^2.0.0",
     "jshint": "^2.9.4"
