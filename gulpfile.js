@@ -16,7 +16,6 @@ var gulp = require('gulp'),
     notify = require('gulp-notify'),
     cache = require('gulp-cache'),
     livereload = require('gulp-livereload'),
-    haml = require('gulp-haml'),
     del = require('del');
 
 // Styles
@@ -26,9 +25,10 @@ gulp.task('styles', function() {
     .pipe(gulp.dest('dist/styles'))
     .pipe(rename({ suffix: '.min' }))
     .pipe(cssnano())
-    .pipe(gulp.dest('dist/styles'))
-    .pipe(notify({ message: 'Styles task complete' }));
+    .pipe(gulp.dest('dist/styles'));
 });
+// m00g: remove .pipe(notify({ message: 'Styles task complete' }
+
 
 // Scripts
 gulp.task('scripts', function() {
@@ -39,9 +39,9 @@ gulp.task('scripts', function() {
     .pipe(gulp.dest('dist/scripts'))
     .pipe(rename({ suffix: '.min' }))
     .pipe(uglify())
-    .pipe(gulp.dest('dist/scripts'))
-    .pipe(notify({ message: 'Scripts task complete' }));
+    .pipe(gulp.dest('dist/scripts'));
 });
+// m00g: remove .pipe(notify({ message: 'Scripts task complete' }));
 
 // Images
 gulp.task('images', function() {
@@ -51,31 +51,15 @@ gulp.task('images', function() {
     .pipe(notify({ message: 'Images task complete' }));
 });
 
-// Get and render all .haml files recursively
-gulp.task('haml', function () {
-  gulp.src('src/views/**/*.haml', {read: false}).
-    pipe(haml().on('error', function(e) { console.log(e.message); })).
-    pipe(gulp.dest('dist/'));
-});
-
-// Compile Haml into HTML with double quotes around attributes
-// Same as haml -q
-gulp.task('haml-double-quote', function() {
-  gulp.src('src/views/**/*.haml', {read: false}).
-       pipe(haml({doubleQuote: true})).
-       pipe(gulp.dest('dist/'));
-});
 
 // Clean
 gulp.task('clean', function() {
   return del(['dist/styles', 'dist/scripts', 'dist/images']);
-  // Todo: Clean also haml files?
 });
 
 // Default task
 gulp.task('default', ['clean'], function() {
-  gulp.start('styles', 'scripts', 'images', 'haml');
-  gulp.run('haml');
+  gulp.start('styles', 'scripts', 'images');
 });
 
 // Watch
@@ -89,9 +73,6 @@ gulp.task('watch', function() {
 
   // Watch image files
   gulp.watch('src/images/**/*', ['images']);
-
-  // Watch views files
-  gulp.watch('src/views/**/*.haml', ['haml']);
 
   // Create LiveReload server
   livereload.listen();
