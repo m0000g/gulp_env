@@ -11,24 +11,25 @@ var gulp = require('gulp'),
     jshint = require('gulp-jshint'),
     uglify = require('gulp-uglify'),
     imagemin = require('gulp-imagemin'),
+    haml = require('gulp-ruby-haml'),
     rename = require('gulp-rename'),
     concat = require('gulp-concat'),
     notify = require('gulp-notify'),
     cache = require('gulp-cache'),
     livereload = require('gulp-livereload'),
-    haml = require('gulp-haml'),
     del = require('del');
 
 // Styles
 gulp.task('styles', function() {
-  return sass('src/styles/main.sass', { style: 'expanded' })
+  return sass('src/styles/**/*.sass', { style: 'expanded' })
     .pipe(autoprefixer('last 2 version'))
-    .pipe(gulp.dest('dist/styles'))
+    .pipe(gulp.dest('dist/css'))
     .pipe(rename({ suffix: '.min' }))
     .pipe(cssnano())
-    .pipe(gulp.dest('dist/styles'))
-    .pipe(notify({ message: 'Styles task complete' }));
+    .pipe(gulp.dest('dist/css'));
 });
+// m00g: remove .pipe(notify({ message: 'Styles task complete' }
+
 
 // Scripts
 gulp.task('scripts', function() {
@@ -39,9 +40,9 @@ gulp.task('scripts', function() {
     .pipe(gulp.dest('dist/scripts'))
     .pipe(rename({ suffix: '.min' }))
     .pipe(uglify())
-    .pipe(gulp.dest('dist/scripts'))
-    .pipe(notify({ message: 'Scripts task complete' }));
+    .pipe(gulp.dest('dist/scripts'));
 });
+// m00g: remove .pipe(notify({ message: 'Scripts task complete' }));
 
 // Images
 gulp.task('images', function() {
@@ -53,28 +54,19 @@ gulp.task('images', function() {
 
 // Get and render all .haml files recursively
 gulp.task('haml', function () {
-  gulp.src('src/views/**/*.haml', {read: false}).
-    pipe(haml().on('error', function(e) { console.log(e.message); })).
-    pipe(gulp.dest('dist/'));
-});
-
-// Compile Haml into HTML with double quotes around attributes
-// Same as haml -q
-gulp.task('haml-double-quote', function() {
-  gulp.src('src/views/**/*.haml', {read: false}).
-       pipe(haml({doubleQuote: true})).
-       pipe(gulp.dest('dist/'));
+  gulp.src('src/haml/**/*.haml')
+    .pipe(haml())
+    .pipe(gulp.dest('dist/'));
 });
 
 // Clean
 gulp.task('clean', function() {
-  return del(['dist/styles', 'dist/scripts', 'dist/images']);
-  // Todo: Clean also haml files?
+  return del(['dist/css', 'dist/scripts', 'dist/images', 'dist']);
 });
 
 // Default task
 gulp.task('default', ['clean'], function() {
-  gulp.start('styles', 'scripts', 'images', 'haml');
+  gulp.start('styles', 'scripts', 'images');
   gulp.run('haml');
 });
 
@@ -90,8 +82,8 @@ gulp.task('watch', function() {
   // Watch image files
   gulp.watch('src/images/**/*', ['images']);
 
-  // Watch views files
-  gulp.watch('src/views/**/*.haml', ['haml']);
+  // Watch haml files
+  gulp.watch('src/haml/**/*.haml', ['haml']);
 
   // Create LiveReload server
   livereload.listen();
