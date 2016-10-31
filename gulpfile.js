@@ -17,6 +17,8 @@ var gulp = require('gulp'),
     notify = require('gulp-notify'),
     cache = require('gulp-cache'),
     livereload = require('gulp-livereload'),
+    coffee = require('gulp-coffee'),
+    gutil = require('gulp-util'),
     del = require('del');
 
 // Styles
@@ -59,6 +61,13 @@ gulp.task('haml', function () {
     .pipe(gulp.dest('dist/'));
 });
 
+// CoffeeScript
+gulp.task('coffee', function() {
+  gulp.src('src/scripts/**/*.coffee')
+    .pipe(coffee({bare: true}).on('error', gutil.log))
+    .pipe(gulp.dest('dist/scripts'));
+});
+
 // Clean
 gulp.task('clean', function() {
   return del(['dist/css', 'dist/scripts', 'dist/images', 'dist']);
@@ -66,7 +75,7 @@ gulp.task('clean', function() {
 
 // Default task
 gulp.task('default', ['clean'], function() {
-  gulp.start('styles', 'scripts', 'images');
+  gulp.start('styles', 'scripts', 'images', 'coffee');
   gulp.run('haml');
 });
 
@@ -78,6 +87,8 @@ gulp.task('watch', function() {
 
   // Watch .js files
   gulp.watch('src/scripts/**/*.js', ['scripts']);
+
+  gulp.watch('src/scripts/**/*.coffee', ['coffee']);
 
   // Watch image files
   gulp.watch('src/images/**/*', ['images']);
