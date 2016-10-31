@@ -19,6 +19,7 @@ var gulp = require('gulp'),
     livereload = require('gulp-livereload'),
     coffee = require('gulp-coffee'),
     gutil = require('gulp-util'),
+    slim = require("gulp-slim"),
     del = require('del');
 
 // Styles
@@ -68,6 +69,16 @@ gulp.task('coffee', function() {
     .pipe(gulp.dest('dist/scripts'));
 });
 
+// Slim - Templateing engine
+
+gulp.task('slim', function(){
+  gulp.src("src/slim/**/*.slim")
+    .pipe(slim({
+      pretty: true
+    }))
+    .pipe(gulp.dest("dist/"));
+});
+
 // Clean
 gulp.task('clean', function() {
   return del(['dist/css', 'dist/scripts', 'dist/images', 'dist']);
@@ -75,7 +86,7 @@ gulp.task('clean', function() {
 
 // Default task
 gulp.task('default', ['clean'], function() {
-  gulp.start('styles', 'scripts', 'images', 'coffee');
+  gulp.start('styles', 'scripts', 'images', 'coffee', 'slim');
   gulp.run('haml');
 });
 
@@ -95,6 +106,9 @@ gulp.task('watch', function() {
 
   // Watch haml files
   gulp.watch('src/haml/**/*.haml', ['haml']);
+
+  // Watch slim files
+  gulp.watch('src/slim/**/*.slim', ['slim']);
 
   // Create LiveReload server
   livereload.listen();

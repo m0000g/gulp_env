@@ -22,6 +22,7 @@
     "gulp-rename": "^1.2.2",
     "gulp-ruby-haml": "0.0.9",
     "gulp-ruby-sass": "^2.1.0",
+    "gulp-slim": "^0.3.0",
     "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.7",
     "jshint": "^2.9.4"
