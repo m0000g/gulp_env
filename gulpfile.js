@@ -24,7 +24,7 @@ var gulp = require('gulp'),
 
 // Styles
 gulp.task('styles', function() {
-  return sass('src/styles/**/*.sass', { style: 'expanded' })
+  return sass('src/styles/**/*.+(scss|sass)', { style: 'expanded' })
     .pipe(autoprefixer('last 2 version'))
     .pipe(gulp.dest('dist/css'))
     .pipe(rename({ suffix: '.min' }))
@@ -99,6 +99,7 @@ gulp.task('watch', function() {
   // Watch .js files
   gulp.watch('src/scripts/**/*.js', ['scripts']);
 
+  // Watch .coffee files
   gulp.watch('src/scripts/**/*.coffee', ['coffee']);
 
   // Watch image files
